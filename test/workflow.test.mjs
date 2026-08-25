@@ -32,4 +32,5 @@ test('closure is blocked until every finding is dispositioned, then amendment su
   assert.equal(repository.getRun(run.runId).state, 'CLOSED');
   const target = repository.getRun(run.runId).findings[0]; engine.amendFinding(run.runId, target.findingId, { question: 'Updated bounded verification question.' });
   const reopened = repository.getRun(run.runId); assert.equal(reopened.state, 'REOPENED'); assert.equal(reopened.decisions[0].status, 'superseded'); assert.equal(reopened.findings[0].version, 2);
+  const packet = engine.buildDecisionPacket(run.runId); assert.equal(packet.packetType, 'verdictflow.decision_packet'); assert.equal(packet.runId, run.runId); assert.ok(packet.events.length > 0);
 });

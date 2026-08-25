@@ -39,10 +39,20 @@ public evidence run requested
 
 ## Current implementation status
 
-The local MVP is implemented: deterministic fixture provider, bounded evidence
-validation, async local event bus, human disposition gates, idempotency,
-versioned reopening, HTTP API, and tests.
+The local MVP is implemented: Review Console, deterministic fixture provider,
+bounded evidence validation, async local event bus, local persistence, human
+disposition gates, decision-packet generation, idempotency, versioned
+reopening, HTTP API, and tests.
 
 Google Cloud deployment, Gemini 3.5 access, ADK orchestration, and external
 integrations remain pending until their adapters are implemented and live
 verification evidence is recorded.
+
+Run locally:
+
+```bash
+npm test
+npm start
+```
+
+Then open `http://localhost:8080`.

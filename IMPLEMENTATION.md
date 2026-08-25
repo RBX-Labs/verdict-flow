@@ -97,6 +97,10 @@ verdictflow/
     workflow.test.mjs
     validation.test.mjs
     idempotency.test.mjs
+  public/
+    index.html
+    app.js
+    styles.css
   docs/
     ARCHITECTURE.md
     WORKFLOW.md
@@ -281,8 +285,11 @@ Never change `PENDING` to `VERIFIED` without attaching the evidence location.
 
 Verified locally:
 
+- Review Console files and local HTTP routes
 - Deterministic fixture workflow
 - Async local event dispatch
+- Local JSON persistence seam
+- Decision-packet generation
 - Exact-quote validation
 - Source-instruction quarantine
 - Idempotency

@@ -81,6 +81,33 @@ export class WorkflowEngine {
     return this.repository.getRun(runId);
   }
 
+  buildDecisionPacket(runId) {
+    const run = this.mustGet(runId);
+    return {
+      packetType: 'verdictflow.decision_packet',
+      packetVersion: '0.1',
+      runId: run.runId,
+      state: run.state,
+      source: { url: run.input.sourceUrl, scope: run.input.scope, publicMaterialConfirmed: run.input.publicMaterialConfirmed },
+      provider: { provider: run.provider, model: run.model, mode: run.mode },
+      findings: run.findings.map((finding) => ({
+        findingId: finding.findingId,
+        version: finding.version,
+        scope: finding.scope,
+        question: finding.question,
+        status: finding.status,
+        evidence: finding.evidence,
+        limitations: finding.limitations,
+        validation: finding.validation,
+        humanDisposition: finding.humanDisposition
+      })),
+      decisions: run.decisions,
+      limitations: run.limitations,
+      events: this.repository.getEvents(runId),
+      generatedAt: this.now()
+    };
+  }
+
   amendFinding(runId, findingId, patch) {
     const run = this.mustGet(runId); const finding = run.findings.find((item) => item.findingId === findingId);
     if (!finding) throw new Error('finding not found');
