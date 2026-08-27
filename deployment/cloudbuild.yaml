@@ -20,4 +20,4 @@ substitutions:
   _REGION: us-central1
   _IMAGE: us-central1-docker.pkg.dev/$PROJECT_ID/verdictflow/verdictflow:$COMMIT_SHA
 options:
-  logging: CLOUD_LOGGING_ONLY
+  logging: GCS_ONLY
