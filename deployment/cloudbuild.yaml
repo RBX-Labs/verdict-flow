@@ -1,15 +1,15 @@
 steps:
   - name: gcr.io/cloud-builders/docker
-    args: ["build", "-f", "deployment/Dockerfile", "-t", "us-central1-docker.pkg.dev/${PROJECT_ID}/verdictflow/verdictflow:${COMMIT_SHA}", "."]
+    args: ["build", "-f", "deployment/Dockerfile", "-t", "us-central1-docker.pkg.dev/${PROJECT_ID}/verdictflow/verdictflow:${BUILD_ID}", "."]
   - name: gcr.io/cloud-builders/docker
-    args: ["push", "us-central1-docker.pkg.dev/${PROJECT_ID}/verdictflow/verdictflow:${COMMIT_SHA}"]
+    args: ["push", "us-central1-docker.pkg.dev/${PROJECT_ID}/verdictflow/verdictflow:${BUILD_ID}"]
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk
     entrypoint: gcloud
     args:
       - run
       - deploy
       - ${_SERVICE}
-      - --image=us-central1-docker.pkg.dev/${PROJECT_ID}/verdictflow/verdictflow:${COMMIT_SHA}
+      - --image=us-central1-docker.pkg.dev/${PROJECT_ID}/verdictflow/verdictflow:${BUILD_ID}
       - --region=${_REGION}
       - --platform=managed
       - --min-instances=0
