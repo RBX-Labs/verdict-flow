@@ -1,98 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="950" viewBox="0 0 1600 950">
-  <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,6 L9,3 z" fill="#334155"/>
-    </marker>
-    <style>
-      .title { font: 700 30px Arial, sans-serif; fill: #0f172a; }
-      .subtitle { font: 16px Arial, sans-serif; fill: #475569; }
-      .label { font: 700 17px Arial, sans-serif; fill: #0f172a; }
-      .small { font: 14px Arial, sans-serif; fill: #334155; }
-      .box { stroke: #334155; stroke-width: 2; rx: 14; }
-      .arrow { stroke: #334155; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
-    </style>
-  </defs>
-  <rect width="1600" height="950" fill="#f8fafc"/>
-  <text x="80" y="62" class="title">VerdictFlow — Accountable AI Decision Trace</text>
-  <text x="80" y="92" class="subtitle">Taskmaster workflow: evidence → validation → human disposition → replayable decision</text>
-
-  <rect x="70" y="155" width="250" height="130" class="box" fill="#dbeafe"/>
-  <text x="195" y="195" text-anchor="middle" class="label">Review Console</text>
-  <text x="195" y="225" text-anchor="middle" class="small">Public URL + excerpt</text>
-  <text x="195" y="248" text-anchor="middle" class="small">Scope + human owner</text>
-
-  <rect x="390" y="155" width="270" height="130" class="box" fill="#dcfce7"/>
-  <text x="525" y="195" text-anchor="middle" class="label">Cloud Run API</text>
-  <text x="525" y="225" text-anchor="middle" class="small">Run coordinator</text>
-  <text x="525" y="248" text-anchor="middle" class="small">Auth + idempotency</text>
-
-  <rect x="735" y="155" width="270" height="130" class="box" fill="#fef3c7"/>
-  <text x="870" y="195" text-anchor="middle" class="label">Google ADK</text>
-  <text x="870" y="225" text-anchor="middle" class="small">Sequential intake</text>
-  <text x="870" y="248" text-anchor="middle" class="small">Parallel checks + loop</text>
-
-  <rect x="1080" y="155" width="250" height="130" class="box" fill="#fce7f3"/>
-  <text x="1205" y="195" text-anchor="middle" class="label">Gemini 3.5+</text>
-  <text x="1205" y="225" text-anchor="middle" class="small">Vertex AI reasoning</text>
-  <text x="1205" y="248" text-anchor="middle" class="small">Structured outputs</text>
-
-  <path d="M320 220 L390 220" class="arrow"/>
-  <path d="M660 220 L735 220" class="arrow"/>
-  <path d="M1005 220 L1080 220" class="arrow"/>
-
-  <rect x="100" y="380" width="270" height="150" class="box" fill="#e0e7ff"/>
-  <text x="235" y="420" text-anchor="middle" class="label">Pub/Sub</text>
-  <text x="235" y="450" text-anchor="middle" class="small">Async jobs</text>
-  <text x="235" y="474" text-anchor="middle" class="small">Retries + dead letter</text>
-  <text x="235" y="498" text-anchor="middle" class="small">Correlated run IDs</text>
-
-  <rect x="445" y="350" width="260" height="190" class="box" fill="#ecfccb"/>
-  <text x="575" y="390" text-anchor="middle" class="label">Specialist agents</text>
-  <text x="575" y="425" text-anchor="middle" class="small">Evidence check</text>
-  <text x="575" y="450" text-anchor="middle" class="small">Completeness check</text>
-  <text x="575" y="475" text-anchor="middle" class="small">Citation consistency</text>
-  <text x="575" y="500" text-anchor="middle" class="small">Scope + safety</text>
-
-  <rect x="780" y="350" width="260" height="190" class="box" fill="#ffedd5"/>
-  <text x="910" y="390" text-anchor="middle" class="label">Deterministic gates</text>
-  <text x="910" y="425" text-anchor="middle" class="small">Exact quote validator</text>
-  <text x="910" y="450" text-anchor="middle" class="small">Schema + scope checks</text>
-  <text x="910" y="475" text-anchor="middle" class="small">Prompt-injection block</text>
-  <text x="910" y="500" text-anchor="middle" class="small">Human closure gate</text>
-
-  <rect x="1115" y="380" width="270" height="150" class="box" fill="#f1f5f9"/>
-  <text x="1250" y="420" text-anchor="middle" class="label">Human owner</text>
-  <text x="1250" y="450" text-anchor="middle" class="small">Accept / reject</text>
-  <text x="1250" y="474" text-anchor="middle" class="small">Modify / escalate</text>
-  <text x="1250" y="498" text-anchor="middle" class="small">Rationale required</text>
-
-  <path d="M870 285 L235 380" class="arrow"/>
-  <path d="M370 455 L445 455" class="arrow"/>
-  <path d="M705 455 L780 455" class="arrow"/>
-  <path d="M1040 455 L1115 455" class="arrow"/>
-
-  <rect x="260" y="650" width="270" height="140" class="box" fill="#dbeafe"/>
-  <text x="395" y="690" text-anchor="middle" class="label">Firestore</text>
-  <text x="395" y="720" text-anchor="middle" class="small">Runs + findings</text>
-  <text x="395" y="744" text-anchor="middle" class="small">Dispositions + versions</text>
-  <text x="395" y="768" text-anchor="middle" class="small">Superseded outcomes</text>
-
-  <rect x="665" y="650" width="270" height="140" class="box" fill="#dcfce7"/>
-  <text x="800" y="690" text-anchor="middle" class="label">Cloud Storage</text>
-  <text x="800" y="720" text-anchor="middle" class="small">Source artifacts</text>
-  <text x="800" y="744" text-anchor="middle" class="small">Decision packets</text>
-  <text x="800" y="768" text-anchor="middle" class="small">Hashes + metadata</text>
-
-  <rect x="1070" y="650" width="270" height="140" class="box" fill="#fce7f3"/>
-  <text x="1205" y="690" text-anchor="middle" class="label">Cloud Logging</text>
-  <text x="1205" y="720" text-anchor="middle" class="small">OpenTelemetry events</text>
-  <text x="1205" y="744" text-anchor="middle" class="small">Agent traces</text>
-  <text x="1205" y="768" text-anchor="middle" class="small">Replay evidence</text>
-
-  <path d="M395 530 L395 650" class="arrow"/>
-  <path d="M800 540 L800 650" class="arrow"/>
-  <path d="M1205 530 L1205 650" class="arrow"/>
-
-  <rect x="365" y="855" width="870" height="55" rx="12" fill="#0f172a"/>
-  <text x="800" y="890" text-anchor="middle" style="font:700 17px Arial; fill:#ffffff;">Decision packet: evidence • limitations • human disposition • owner • versioned trace</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080">
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0L0 6L9 3z" fill="#334155"/></marker><style>
+.title{font:700 32px Arial;fill:#10231d}.sub{font:15px Arial;fill:#64756d}.head{font:700 18px Arial;fill:#10231d}.body{font:14px Arial;fill:#334155}.small{font:700 12px Arial;letter-spacing:1px}.box{stroke:#6f8179;stroke-width:2;rx:16}.line{stroke:#334155;stroke-width:2.5;fill:none;marker-end:url(#arrow)}.dash{stroke:#8b9a92;stroke-width:2;stroke-dasharray:8 7;fill:none;marker-end:url(#arrow)}.lane{font:700 14px Arial;letter-spacing:1px}
+</style></defs>
+<rect width="1600" height="1080" fill="#f6faf7"/>
+<text x="70" y="62" class="title">VerdictFlow — Evidence Relay architecture</text><text x="70" y="91" class="sub">Two verified access paths: anonymous judge fixture and authorized live Gemini execution</text>
+<rect x="70" y="125" width="250" height="40" rx="20" fill="#d7f1e4"/><text x="195" y="151" text-anchor="middle" class="small" fill="#137a55">VERIFIED CURRENT</text><rect x="340" y="125" width="250" height="40" rx="20" fill="#fff0d9"/><text x="465" y="151" text-anchor="middle" class="small" fill="#a85d13">PLANNED ADAPTER</text><line x1="70" y1="190" x2="1530" y2="190" stroke="#d7e2dc" stroke-width="2"/>
+<text x="70" y="220" class="lane" fill="#137a55">PUBLIC JUDGE PATH · NO CREDENTIALS</text>
+<rect x="70" y="245" width="300" height="125" class="box" fill="#e6f4ee"/><text x="220" y="285" text-anchor="middle" class="head">GitHub Pages demo</text><text x="220" y="312" text-anchor="middle" class="body">Anonymous browser access</text><text x="220" y="338" text-anchor="middle" class="body">Fixture mode · no backend call</text>
+<rect x="445" y="245" width="330" height="125" class="box" fill="#eaf0ff"/><text x="610" y="285" text-anchor="middle" class="head">Browser fixture workflow</text><text x="610" y="312" text-anchor="middle" class="body">Credential-free lifecycle replay</text><text x="610" y="338" text-anchor="middle" class="body">Local deterministic provider</text>
+<rect x="850" y="245" width="330" height="125" class="box" fill="#e6f4ee"/><text x="1015" y="285" text-anchor="middle" class="head">Judge-visible outcome</text><text x="1015" y="312" text-anchor="middle" class="body">Human task · closure gate</text><text x="1015" y="338" text-anchor="middle" class="body">Packet · reopen / supersede</text><path d="M370 307H445M775 307H850" class="line"/>
+<text x="70" y="425" class="lane" fill="#6b4b9a">AUTHORIZED LIVE PATH · VERIFIED BACKEND</text>
+<rect x="70" y="450" width="300" height="125" class="box" fill="#eaf0ff"/><text x="220" y="490" text-anchor="middle" class="head">Review request</text><text x="220" y="517" text-anchor="middle" class="body">Source + excerpt + scope</text><text x="220" y="543" text-anchor="middle" class="body">Named human owner</text>
+<rect x="445" y="450" width="330" height="125" class="box" fill="#d7f1e4"/><text x="610" y="490" text-anchor="middle" class="head">Cloud Run API</text><text x="610" y="517" text-anchor="middle" class="body">Private verified backend</text><text x="610" y="543" text-anchor="middle" class="body">Run IDs · idempotency</text>
+<rect x="850" y="450" width="330" height="125" class="box" fill="#f7e7ff"/><text x="1015" y="490" text-anchor="middle" class="head">Vertex AI</text><text x="1015" y="517" text-anchor="middle" class="body">Google Gen AI SDK</text><text x="1015" y="543" text-anchor="middle" class="body">Gemini 3.5 Flash-Lite</text><path d="M370 512H445M775 512H850" class="line"/>
+<rect x="1215" y="450" width="315" height="125" class="box" fill="#f0f5f2"/><text x="1372" y="490" text-anchor="middle" class="head">Current MVP runtime</text><text x="1372" y="517" text-anchor="middle" class="body">File-backed JSON repository</text><text x="1372" y="543" text-anchor="middle" class="body">Local async event bus</text><path d="M610 575V600H1372V575" class="dash"/>
+<text x="70" y="635" class="lane" fill="#334155">SHARED DECISION-ASSURANCE CONTRACT</text>
+<rect x="70" y="660" width="270" height="175" class="box" fill="#e6f4ee"/><text x="205" y="700" text-anchor="middle" class="head">01 Intake agent</text><text x="205" y="735" text-anchor="middle" class="body">Bounded questions</text><text x="205" y="761" text-anchor="middle" class="body">Claims + source scope</text><text x="205" y="787" text-anchor="middle" class="body">Metadata extraction</text><text x="205" y="813" text-anchor="middle" class="body">No accept/reject decision</text>
+<rect x="370" y="660" width="270" height="175" class="box" fill="#e6f4ee"/><text x="505" y="700" text-anchor="middle" class="head">02 Evidence agent</text><text x="505" y="735" text-anchor="middle" class="body">Exact quote matching</text><text x="505" y="761" text-anchor="middle" class="body">Source-bound findings</text><text x="505" y="787" text-anchor="middle" class="body">Evidence status</text><text x="505" y="813" text-anchor="middle" class="body">Abstains when unproven</text>
+<rect x="670" y="660" width="270" height="175" class="box" fill="#e6f4ee"/><text x="805" y="700" text-anchor="middle" class="head">03 Scope / Safety</text><text x="805" y="735" text-anchor="middle" class="body">Parallel with evidence</text><text x="805" y="761" text-anchor="middle" class="body">Injection quarantine</text><text x="805" y="787" text-anchor="middle" class="body">Boundary + privacy checks</text><text x="805" y="813" text-anchor="middle" class="body">No unsupported authority</text>
+<rect x="970" y="660" width="270" height="175" class="box" fill="#e6f4ee"/><text x="1105" y="700" text-anchor="middle" class="head">04 Synthesis agent</text><text x="1105" y="735" text-anchor="middle" class="body">Validated inputs only</text><text x="1105" y="761" text-anchor="middle" class="body">Packet draft</text><text x="1105" y="787" text-anchor="middle" class="body">Verification tasks</text><text x="1105" y="813" text-anchor="middle" class="body">No new factual claims</text><path d="M610 575V620H205V660M610 575V620H505V660M610 575V620H805V660M610 575V620H1105V660M340 747H370M640 747H670M940 747H970" class="line"/>
+<rect x="70" y="895" width="390" height="125" class="box" fill="#fff0d9"/><text x="265" y="935" text-anchor="middle" class="head">Deterministic gates</text><text x="265" y="962" text-anchor="middle" class="body">Exact quotes · schema/status</text><text x="265" y="988" text-anchor="middle" class="body">Safe abstention · quarantine</text>
+<rect x="520" y="895" width="390" height="125" class="box" fill="#eaf0ff"/><text x="715" y="935" text-anchor="middle" class="head">Human owner</text><text x="715" y="962" text-anchor="middle" class="body">Disposition + rationale</text><text x="715" y="988" text-anchor="middle" class="body">Closure gate · reopen</text>
+<rect x="970" y="895" width="390" height="125" class="box" fill="#d7f1e4"/><text x="1165" y="935" text-anchor="middle" class="head">Decision packet + trace</text><text x="1165" y="962" text-anchor="middle" class="body">Run ID · findings · versions</text><text x="1165" y="988" text-anchor="middle" class="body">Prior outcomes preserved</text><path d="M1105 835V870H265V895M1105 835V870H715V895M1105 835V870H1165V895M460 957H520M910 957H970" class="line"/>
+<rect x="70" y="1040" width="1290" height="30" rx="12" fill="#fff0d9" stroke="#d59a4d" stroke-width="2"/><text x="715" y="1061" text-anchor="middle" class="body">PLANNED / OPT-IN: Gemma endpoint deployment · Pub/Sub durable jobs · Firestore state · Cloud Storage artifacts · ADK · Cloud Logging / OpenTelemetry</text>
 </svg>

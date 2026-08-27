@@ -4,11 +4,13 @@ import path from 'node:path';
 import { FileRepository } from './repositories/file-repository.mjs';
 import { LocalBus } from './events/local-bus.mjs';
 import { FixtureProvider } from './agents/provider-adapter.mjs';
+import { VertexGenAIProvider } from './agents/google-genai-provider.mjs';
 import { WorkflowEngine } from './workflow/engine.mjs';
 
 const repository = new FileRepository(path.join(process.cwd(), '.data', 'verdictflow.json'));
 const bus = new LocalBus();
-const engine = new WorkflowEngine({ repository, bus, provider: new FixtureProvider() });
+const provider = process.env.VERDICTFLOW_PROVIDER === 'vertex' ? new VertexGenAIProvider() : new FixtureProvider();
+const engine = new WorkflowEngine({ repository, bus, provider });
 
 function json(res, status, body) { res.writeHead(status, { 'content-type': 'application/json' }); res.end(JSON.stringify(body)); }
 function staticFile(res, filePath, contentType) { res.writeHead(200, { 'content-type': contentType }); res.end(fs.readFileSync(filePath)); }

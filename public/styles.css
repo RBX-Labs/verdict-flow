@@ -25,7 +25,7 @@ button span { margin-left:8px; }
 .muted { color:var(--muted); font-size:12px; }
 .state { border-radius:12px; background:#eef2ff; color:#3730a3; font-size:22px; font-weight:800; padding:18px; }
 .state.empty { background:#f8fafc; color:#94a3b8; }
-.metrics { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:16px; }
+.metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:16px; }
 .metrics div { background:#f8fafc; border-radius:10px; padding:12px; }
 .metrics strong, .metrics span { display:block; }
 .metrics strong { font-size:22px; }
@@ -33,6 +33,7 @@ button span { margin-left:8px; }
 .timeline { padding-left:20px; margin:0; }
 .timeline li { margin:9px 0; color:#334155; font-size:12px; }
 .timeline time { color:#94a3b8; margin-left:6px; }
+.timeline small { display:block; color:#64748b; font-size:10px; margin-top:3px; }
 .hidden { display:none; }
 #findings-card, #packet-card { margin-top:18px; }
 .finding { border:1px solid var(--line); border-radius:12px; padding:15px; margin:12px 0; }
@@ -43,7 +44,11 @@ button span { margin-left:8px; }
 .finding select { max-width:220px; }
 .status-supported { color:var(--green); font-weight:800; }
 .status-not_established, .status-contradictory { color:var(--amber); font-weight:800; }
+.verification-evidence_verified { color:var(--green); font-weight:800; font-size:11px; }
+.verification-not_established, .verification-evidence_rejected { color:var(--amber); font-weight:800; font-size:11px; }
+.verification-task { background:#fff8e1; border-left:3px solid #f59e0b; padding:7px 10px; font-size:12px !important; }
 .close-row { display:flex; gap:10px; margin-top:16px; }
 .close-row input { margin:0; }
+.secondary { background:var(--ink); color:#fff; border:0; border-radius:8px; padding:10px 14px; font-weight:700; }
 pre { background:#0f172a; color:#dbeafe; border-radius:12px; overflow:auto; padding:16px; font-size:11px; max-height:420px; }
 @media (max-width:800px) { .grid { grid-template-columns:1fr; } .hero { align-items:flex-start; flex-direction:column; } h1 { font-size:42px; } .close-row { flex-direction:column; } }

@@ -1,7 +1,12 @@
 # VerdictFlow actual workflow
 
-This is the behavior contract for the MVP and demo. Anything not described
-here is out of scope until deliberately added and verified.
+This is the behavior contract for the MVP and demo. The judge-accessible public
+surface is the same-repository `site/` demo published through GitHub Pages and
+runs a deterministic fixture without credentials. The authenticated Cloud Run
++ Vertex AI path remains the live backend evidence surface; the public page does
+not proxy anonymous Gemini requests. The local implementation
+uses a file repository and local async bus. Pub/Sub, Firestore, and Cloud
+Storage are target adapters, not claims about the current runtime.
 
 ## Input contract
 
@@ -21,13 +26,12 @@ The MVP does not accept confidential manuscripts or private reviewer material.
 CREATED
   -> QUEUED
   -> INGESTING
-  -> SCOPE_BLOCKED | ANALYZING
+  -> ANALYZING
   -> FINDINGS_READY
   -> NEEDS_HUMAN_DISPOSITION
   -> READY_TO_CLOSE
   -> CLOSED
 
-ANALYZING -> RETRY_PENDING -> ANALYZING
 ANALYZING -> RUN_FAILED
 NEEDS_HUMAN_DISPOSITION -> REOPENED when a finding changes
 CLOSED -> REOPENED when supporting evidence or a finding changes
@@ -43,12 +47,14 @@ stores the input metadata, and emits `run.created`.
 
 ### 2. Validate scope
 
-The Scope and Safety Agent checks that the source is declared public, the
-selected check is allowed, and the input does not contain an instruction that
-attempts to override system policy.
+The input contract checks that the source is declared public and the selected
+check is allowed. The Scope/Safety Agent detects instruction-like text and
+quarantines it without granting it authority.
 
-If scope fails, the run becomes `SCOPE_BLOCKED`; no model-generated finding is
-treated as a result.
+The current MVP does not implement a separate `SCOPE_BLOCKED` transition;
+invalid inputs are rejected before a run is created. A durable retry state is
+also planned but not implemented; provider failures currently become
+`RUN_FAILED`.
 
 ### 3. Extract bounded signals
 
@@ -70,15 +76,19 @@ Forbidden scopes:
 
 ### 4. Run specialist checks
 
-The Evidence Check Agent and specialist checks run through Pub/Sub. Each output
-must contain either an exact quote from the supplied excerpt or an explicit
+The Evidence Agent and Scope/Safety Agent run in parallel through the current
+local async workflow. The deployed provider executes these bounded agents via
+Gemini; Pub/Sub is the planned durable transport. Each output must contain
+either an exact quote from the supplied excerpt or an explicit
 `not_established` explanation.
 
-### 5. Validate model output
+### 5. Validate model output and create verification state
 
-Deterministic code verifies JSON shape, quote presence, source boundaries, and
-allowed labels. Invalid findings are excluded individually and recorded in the
-run limitations.
+Deterministic code verifies required fields, allowed labels, quote presence,
+and source boundaries. Each finding receives an explicit verification status:
+`evidence_verified`, `not_established`, or `evidence_rejected`. Findings that
+cannot be established receive an open human verification task. This is
+evidence-bound verification, not an independent truth claim.
 
 ### 6. Create human tasks
 
@@ -98,7 +108,7 @@ disposition. The human outcome is a decision record, not an AI verdict.
 
 ### 8. Generate decision packet
 
-The Synthesis Agent creates a packet containing validated findings,
+The Synthesis Agent combines only validated findings into a packet containing
 dispositions, unresolved limitations, provider/model metadata, and the final
 human rationale. It cannot add unsupported findings.
 

@@ -6,6 +6,7 @@ export class FixtureProvider {
   }
 
   async analyze({ excerpt, scope }) {
+    const blockedInstruction = /ignore\s+(all|any|previous|the)\s+(instructions|policies)/i.test(excerpt);
     const findings = [];
     const evidenceQuote = 'The method compares the intervention group with a control group.';
     if (excerpt.includes(evidenceQuote)) {
@@ -37,7 +38,19 @@ export class FixtureProvider {
         limitations: ['The cited source was not fetched in the local MVP.']
       });
     }
-    return { provider: this.provider, model: this.model, mode: this.mode, findings, limitations: [] };
+    return {
+      provider: this.provider,
+      model: this.model,
+      mode: this.mode,
+      findings,
+      limitations: [],
+      agentTrace: [
+        { agent: 'intake', status: 'completed', provider: this.provider, outputCount: 1 },
+        { agent: 'evidence', status: 'completed', provider: this.provider, outputCount: findings.length },
+        { agent: 'scope_safety', status: 'completed', provider: this.provider, outputCount: 1, blockedInstruction },
+        { agent: 'synthesis', status: 'completed', provider: this.provider, outputCount: findings.length }
+      ]
+    };
   }
 }
 

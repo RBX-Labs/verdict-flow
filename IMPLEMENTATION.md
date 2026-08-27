@@ -33,14 +33,15 @@ Build a locally runnable and Google-Cloud-deployable Taskmaster MVP that:
 
 - Node.js, ESM JavaScript
 - Built-in HTTP server unless an existing dependency is justified
-- In-memory repository for deterministic local development
+- File-backed JSON repository for deterministic local development
 - Deterministic validator for evidence and state transitions
 - Provider adapter interface with a clearly labeled local fixture provider
 
 ### Google deployment seam
 
 - Gemini 3.5+ through Vertex AI or Gemini API
-- Google ADK adapter
+- Official Google Gen AI SDK (`@google/genai`) through Vertex AI
+- Optional Gemma 3 advisory reviewer through a separately deployed Vertex AI endpoint
 - Cloud Run service
 - Pub/Sub adapter with retry and dead-letter configuration
 - Firestore repository adapter
@@ -50,6 +51,15 @@ Build a locally runnable and Google-Cloud-deployable Taskmaster MVP that:
 The local MVP must work without credentials. Google adapters must fail clearly
 when credentials or configuration are absent; they must never silently pretend
 to be live.
+
+### Gemma advisory boundary
+
+Gemma is not used as a second decision-maker. When `GEMMA_ENDPOINT_ID` is set,
+the adapter calls a deployed Vertex AI endpoint and returns only a bounded
+advisory: risk, instruction-like text, unsupported-claim signal, abstention
+signal, and flags. The advisory is recorded in the agent trace and supplied to
+synthesis as a warning signal. Deterministic evidence validation and human
+disposition remain authoritative. Without an endpoint ID, Gemma is disabled.
 
 ## Fixed repository layout
 
@@ -234,21 +244,21 @@ fixture is valid for local workflow tests but is not evidence of model quality.
 
 The MVP is not complete until all of these pass:
 
-- [ ] A run can be created with the required input contract.
-- [ ] Duplicate create requests with the same idempotency key do not duplicate work.
-- [ ] The fixture produces at least one supported finding.
-- [ ] The fixture produces at least one `not_established` finding.
-- [ ] A quote not present in the excerpt is rejected by code.
-- [ ] Hidden source instructions cannot change policy or permissions.
-- [ ] Findings run through the async local bus and emit correlated events.
-- [ ] Closure is blocked until every finding has a disposition and evidence note.
-- [ ] Closure produces a versioned decision packet.
-- [ ] Amending a finding preserves the previous decision as superseded.
-- [ ] Invalid provider output fails one finding without corrupting the run.
-- [ ] Retry behavior is idempotent.
-- [ ] `GET` responses are bounded and omit raw source payloads.
-- [ ] Tests cover the happy path, evidence failure, scope block, retry, closure gate, and reopen path.
-- [ ] Google adapter absence is reported honestly and does not masquerade as live execution.
+- [x] A run can be created with the required input contract.
+- [x] Duplicate create requests with the same idempotency key do not duplicate work.
+- [x] The fixture produces at least one supported finding.
+- [x] The fixture produces at least one `not_established` finding.
+- [x] A quote not present in the excerpt is rejected by code.
+- [x] Hidden source instructions cannot change policy or permissions.
+- [x] Findings run through the async local bus and emit correlated events.
+- [x] Closure is blocked until every finding has a disposition and evidence note.
+- [x] Closure produces a versioned decision packet.
+- [x] Amending a finding preserves the previous decision as superseded.
+- [x] Invalid provider output fails one finding without corrupting the run.
+- [ ] Retry behavior is idempotent. (Planned; current provider failures become `RUN_FAILED`.)
+- [x] `GET` responses are bounded and omit raw source payloads.
+- [x] Tests cover the happy path, evidence failure, scope block, provider failure, closure gate, and reopen path.
+- [x] Google adapter absence is reported honestly and does not masquerade as live execution.
 
 ## Build order
 
@@ -259,7 +269,7 @@ The MVP is not complete until all of these pass:
 5. HTTP API and bounded projections.
 6. Tests for all acceptance criteria.
 7. Vertex/GenAI provider adapter.
-8. Firestore, Pub/Sub, Cloud Storage, and Cloud Run adapters.
+8. Vertex/Cloud Run deployment seam; Firestore, Pub/Sub, and Cloud Storage adapters remain future work.
 9. Demo UI and live Google Cloud evidence capture.
 10. Devpost copy update from verified implementation facts only.
 
@@ -269,10 +279,17 @@ Record implementation proof here as it becomes real:
 
 | Claim | Evidence location | Status |
 |---|---|---|
-| Local workflow passes | `npm test`: 6 passing tests | VERIFIED |
-| Gemini 3.5+ used | provider log/model ID | PENDING |
-| ADK orchestrates agents | ADK trace | PENDING |
-| Cloud Run deployed | service URL/revision | PENDING |
+| Local workflow passes | `npm test`: 11 passing tests | VERIFIED |
+| Deterministic fixture exposes four-agent trace | `intake`, `evidence`, `scope_safety`, `synthesis`; provider labeled `local_fixture` | VERIFIED |
+| Gemini 3.5+ used | Cloud Run run `run_8575db8a-b051-4e3a-a534-1cb8f9b40798` used `google_vertex_ai` / `gemini-3.5-flash-lite` and reached `NEEDS_HUMAN_DISPOSITION` | VERIFIED |
+| Google Gen AI SDK invokes Gemini | Cloud Run run `run_8575db8a-b051-4e3a-a534-1cb8f9b40798`; provider `google_vertex_ai` | VERIFIED |
+| Four-agent Gemini workflow | Cloud Run run `run_8575db8a-b051-4e3a-a534-1cb8f9b40798`; intake, evidence, scope/safety, and synthesis completed | VERIFIED |
+| Cloud Run deployed privately | `https://verdictflow-628812601211.us-central1.run.app`, revision `verdictflow-00005-5b4` | VERIFIED |
+| Same-repository judge demo | `site/` plus `.github/workflows/pages.yml`; GitHub Pages publication pending | IMPLEMENTED / HOSTING PENDING |
+| Review Console end-to-end flow | Visual/API audit: run → quarantine → four-agent trace → human dispositions → closed packet → UI amend/reopen | VERIFIED |
+| Acceptance evaluation | `docs/EVALUATION.md`; six control metrics with test/audit evidence | VERIFIED |
+| Model-quality benchmark harness | `npm run evaluate:model`; fixture and live Vertex/Gemini benchmark both verified at 100% on the current 3-case labeled set | IMPLEMENTED / SMALL BENCHMARK |
+| Gemma advisory adapter | `src/agents/gemma-reviewer.mjs`; endpoint-backed implementation with schema test; deployed endpoint and live smoke result still required | IMPLEMENTED / ENDPOINT PENDING |
 | Pub/Sub async execution | message/event log | PENDING |
 | Firestore persistence | document IDs/screenshots | PENDING |
 | Cloud Storage artifacts | object IDs | PENDING |
@@ -283,7 +300,7 @@ Never change `PENDING` to `VERIFIED` without attaching the evidence location.
 
 ## Current audit snapshot
 
-Verified locally:
+Verified locally and in the deployed smoke test:
 
 - Review Console files and local HTTP routes
 - Deterministic fixture workflow
@@ -291,21 +308,23 @@ Verified locally:
 - Local JSON persistence seam
 - Decision-packet generation
 - Exact-quote validation
+- Explicit `evidence_verified`, `not_established`, and `evidence_rejected` statuses
+- Human verification tasks for insufficient or rejected evidence
+- Multi-agent trace with intake, evidence, scope/safety, and synthesis stages
+- Live four-agent trace: run `run_8575db8a-b051-4e3a-a534-1cb8f9b40798`
+- Live source-instruction quarantine and `evidence_verified` result: run `run_8575db8a-b051-4e3a-a534-1cb8f9b40798`
 - Source-instruction quarantine
 - Idempotency
 - Human disposition and closure gate
 - Superseded decision reopening
-- Six automated tests passing
+- Eleven automated tests passing
 
 Not implemented or not verified yet:
 
-- Review Console UI
-- Decision-packet artifact generation
-- Real Gemini/Vertex AI provider
-- Google ADK orchestration
+- Downloadable/Cloud Storage decision-packet artifact
+- Multi-agent ADK orchestration
 - Pub/Sub adapter and dead-letter behavior
 - Firestore persistence
 - Cloud Storage artifacts
-- Cloud Run deployment
 - OpenTelemetry export
-- Public hosted demo and four-minute video
+- Same-repository GitHub Pages fixture demo source; Pages activation and the four-minute video remain pending

@@ -26,7 +26,7 @@ export class WorkflowEngine {
     const run = {
       runId: id('run'), idempotencyKey, state: RUN_STATES[0], input: normalized,
       provider: this.provider.provider, model: this.provider.model, mode: this.provider.mode,
-      findings: [], decisions: [], limitations: [], createdAt: this.now(), updatedAt: this.now()
+      findings: [], decisions: [], limitations: [], agentTrace: [], createdAt: this.now(), updatedAt: this.now()
     };
     this.repository.saveRun(run); this.event(run.runId, 'run.created', { providerMode: run.mode });
     run.state = 'QUEUED'; run.updatedAt = this.now(); this.repository.saveRun(run); this.event(run.runId, 'run.queued');
@@ -43,17 +43,24 @@ export class WorkflowEngine {
       if (safety.blockedInstruction) {
         run.limitations.push(safety.reason); this.event(runId, 'source.instruction_blocked', { reason: safety.reason });
       }
-      run.state = 'ANALYZING'; this.save(run, 'agent.started', { agent: 'fixture-provider' });
+      run.state = 'ANALYZING'; this.save(run, 'agent.started', { agent: this.provider.provider });
       const result = await this.provider.analyze(run.input);
       run.provider = result.provider; run.model = result.model; run.mode = result.mode;
+      run.agentTrace = result.agentTrace || [];
+      run.limitations.push(...(result.limitations || []));
+      for (const agent of run.agentTrace) this.event(runId, 'agent.completed', agent);
       for (const candidate of result.findings) {
         const validation = validateFindingEvidence(candidate, run.input.excerpt);
-        const finding = { ...candidate, version: 1, validation, humanDisposition: null, createdAt: this.now() };
+        const verificationTask = validation.verificationStatus === 'evidence_verified' ? null : {
+          taskId: id('task'), type: 'human_verification', state: 'OPEN', owner: run.input.humanOwner,
+          requestedAction: validation.reason || 'Review the evidence boundary and resolve the finding.', createdAt: this.now()
+        };
+        const finding = { ...candidate, version: 1, validation, verificationTask, humanDisposition: null, createdAt: this.now() };
         if (!validation.ok) { finding.status = 'invalidated'; run.limitations.push(validation.reason); this.event(runId, 'finding.evidence_rejected', { findingId: finding.findingId, reason: validation.reason }); }
         else this.event(runId, 'finding.created', { findingId: finding.findingId, status: finding.status });
         run.findings.push(finding);
       }
-      run.state = 'NEEDS_HUMAN_DISPOSITION'; this.save(run, 'agent.completed', { count: run.findings.length });
+      run.state = 'NEEDS_HUMAN_DISPOSITION'; this.save(run, 'workflow.verification_ready', { count: run.findings.length, agentCount: run.agentTrace.length });
     } catch (error) {
       run.state = 'RUN_FAILED'; run.limitations.push(error.message); this.save(run, 'run.failed', { message: error.message });
     }
@@ -99,10 +106,12 @@ export class WorkflowEngine {
         evidence: finding.evidence,
         limitations: finding.limitations,
         validation: finding.validation,
+        verificationTask: finding.verificationTask,
         humanDisposition: finding.humanDisposition
       })),
       decisions: run.decisions,
       limitations: run.limitations,
+      agentTrace: run.agentTrace || [],
       events: this.repository.getEvents(runId),
       generatedAt: this.now()
     };

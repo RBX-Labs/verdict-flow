@@ -1,5 +1,12 @@
 # VerdictFlow architecture
 
+> Implementation note: this document describes the target Google Cloud
+> architecture. The current deployed MVP uses Cloud Run + Vertex AI, with a
+> local file repository and local async bus. Multi-agent fan-out is implemented
+> inside the Gemini provider; the optional Gemma advisory adapter calls a
+> separately deployed Vertex endpoint when configured. Pub/Sub, Firestore,
+> Cloud Storage, and ADK remain planned infrastructure adapters.
+
 ## Product boundary
 
 VerdictFlow governs an AI-generated signal after it exists. It does not make a
@@ -21,34 +28,33 @@ The system must be able to answer:
 
 ```mermaid
 flowchart TD
-    UI[Review Console] --> API[Cloud Run API]
-    API --> RUN[Run Coordinator]
-    API --> STORE[(Firestore)]
-    API --> FILES[(Cloud Storage)]
-
-    RUN --> BUS[Pub/Sub]
-    BUS --> INTAKE[Intake Agent]
-    BUS --> CHECK[Evidence Check Agent]
-    BUS --> SCOPE[Scope and Safety Agent]
-    BUS --> SYNTH[Synthesis Agent]
-    BUS --> FOLLOW[Follow-up Agent]
-
-    INTAKE --> GEM[Gemini 3.5+ via Vertex AI]
-    CHECK --> GEM
-    SCOPE --> GEM
+    PUBLIC[Public Sites judge demo\nfixture mode] -. UX evidence .-> PACKET
+    REQUEST[Review request\nsource + excerpt + owner] --> API[Cloud Run API\nprivate verified runtime]
+    API --> INTAKE[Intake agent]
+    INTAKE -->|parallel| EVIDENCE[Evidence agent]
+    INTAKE -->|parallel| SAFETY[Scope / Safety agent]
+    EVIDENCE --> GATES[Deterministic gates\nexact quote + schema + quarantine]
+    SAFETY --> GATES
+    GATES --> SYNTH[Synthesis agent]
+    SYNTH --> TASK[Human verification task]
+    TASK --> PACKET[Decision packet + audit trace]
+    API --> GEM[Vertex AI + Google Gen AI SDK\nGemini 3.5 Flash-Lite]
+    API -. optional advisory .-> GEMMA[Vertex AI endpoint\nGemma 3 reviewer]
+    INTAKE --> GEM
+    EVIDENCE --> GEM
+    SAFETY --> GEM
     SYNTH --> GEM
-    FOLLOW --> GEM
-
-    CHECK --> VALID[Deterministic evidence validator]
-    SCOPE --> POLICY[Policy and boundary checks]
-    SYNTH --> STORE
-    FOLLOW --> STORE
-
-    RUN --> TRACE[Structured audit events]
-    TRACE --> LOG[Cloud Logging / OpenTelemetry]
-    STORE --> UI
-    FILES --> UI
+    API -. planned adapter .-> PUBSUB[(Pub/Sub)]
+    API -. planned adapter .-> FS[(Firestore)]
+    PACKET -. planned adapter .-> GCS[(Cloud Storage)]
+    API -. planned .-> LOG[Cloud Logging / OTel]
 ```
+
+The dashed services are not represented as implemented in the current MVP.
+The public Sites page is a fixture-mode judge surface; the Cloud Run endpoint
+is the authenticated live Gemini/Vertex AI evidence surface. Gemma is an
+optional advisory path and is not claimed as live unless a deployed endpoint
+and smoke-test evidence are present.
 
 ## Google services
 

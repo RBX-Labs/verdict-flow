@@ -32,7 +32,7 @@
         <section class="card status-card">
           <div class="card-heading"><h2>Run state</h2><span id="run-id">—</span></div>
           <div id="state" class="state empty">Waiting for a run</div>
-          <div class="metrics"><div><strong id="finding-count">0</strong><span>findings</span></div><div><strong id="event-count">0</strong><span>events</span></div><div><strong id="decision-count">0</strong><span>decisions</span></div></div>
+          <div class="metrics"><div><strong id="finding-count">0</strong><span>findings</span></div><div><strong id="agent-count">0</strong><span>agents</span></div><div><strong id="event-count">0</strong><span>events</span></div><div><strong id="decision-count">0</strong><span>decisions</span></div></div>
           <div class="card-heading sub"><h2>Execution timeline</h2></div>
           <ol id="timeline" class="timeline"><li class="muted">Events will appear here.</li></ol>
         </section>
@@ -48,6 +48,8 @@
       <section id="packet-card" class="card hidden">
         <div class="card-heading"><h2>Decision packet</h2><span>03</span></div>
         <pre id="packet"></pre>
+        <button id="amend-run" class="secondary hidden">Amend first finding and reopen</button>
+        <p id="amend-status" class="muted"></p>
       </section>
     </main>
     <script type="module" src="/app.js"></script>

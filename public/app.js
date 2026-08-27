@@ -12,18 +12,25 @@ function renderRun(run) {
   setText('#state', run.state || '—');
   $('#state').className = `state ${run.state === 'CLOSED' ? 'closed' : ''}`;
   setText('#finding-count', run.findings?.length || 0);
+  setText('#agent-count', run.agentTrace?.length || 0);
   setText('#event-count', run.events?.length || 0);
   setText('#decision-count', run.decisions?.length || 0);
-  $('#timeline').innerHTML = (run.events || []).map((event) => `<li><strong>${escapeHtml(event.eventType)}</strong><time>${escapeHtml(event.timestamp)}</time></li>`).join('') || '<li class="muted">Events will appear here.</li>';
+  $('#timeline').innerHTML = (run.events || []).map((event) => {
+    const payload = event.payload || {};
+    const detail = Object.entries(payload).filter(([key]) => !['excerpt', 'rawExcerpt'].includes(key)).map(([key, value]) => `${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`).join(' · ');
+    return `<li><strong>${escapeHtml(event.eventType)}</strong><time>${escapeHtml(event.timestamp)}</time>${detail ? `<small>${escapeHtml(detail)}</small>` : ''}</li>`;
+  }).join('') || '<li class="muted">Events will appear here.</li>';
   if (run.findings?.length) { $('#findings-card').classList.remove('hidden'); renderFindings(run); }
-  if (run.state === 'CLOSED') { $('#packet-card').classList.remove('hidden'); loadPacket(run.runId); }
+  if (run.state === 'CLOSED') { $('#packet-card').classList.remove('hidden'); $('#amend-run').classList.remove('hidden'); loadPacket(run.runId); }
 }
 
 function renderFindings(run) {
   $('#findings').innerHTML = run.findings.map((finding) => {
     const quote = finding.evidence?.[0]?.quote ? `<blockquote>${escapeHtml(finding.evidence[0].quote)}</blockquote>` : '';
     const disposition = finding.humanDisposition?.disposition || '';
-    return `<article class="finding"><div class="finding-top"><div><h3>${escapeHtml(finding.question)}</h3><span class="status-${escapeHtml(finding.status)}">${escapeHtml(finding.status)}</span></div><small>${escapeHtml(finding.findingId)} · v${finding.version}</small></div><p>${escapeHtml((finding.limitations || []).join(' ') || 'Evidence state recorded.')}</p>${quote}<select data-finding="${escapeHtml(finding.findingId)}"><option value="">Choose disposition…</option><option value="accepted" ${disposition === 'accepted' ? 'selected' : ''}>Accepted</option><option value="rejected" ${disposition === 'rejected' ? 'selected' : ''}>Rejected</option><option value="modified" ${disposition === 'modified' ? 'selected' : ''}>Modified</option><option value="escalated" ${disposition === 'escalated' ? 'selected' : ''}>Escalated</option></select><input data-note="${escapeHtml(finding.findingId)}" placeholder="Evidence note" value="${escapeHtml(finding.humanDisposition?.evidenceNote || '')}" /></article>`;
+    const verification = finding.validation?.verificationStatus || 'pending';
+    const task = finding.verificationTask ? `<p class="verification-task"><strong>Human verification required:</strong> ${escapeHtml(finding.verificationTask.requestedAction)}</p>` : '';
+    return `<article class="finding"><div class="finding-top"><div><h3>${escapeHtml(finding.question)}</h3><span class="status-${escapeHtml(finding.status)}">${escapeHtml(finding.status)}</span> <span class="verification-${escapeHtml(verification)}">${escapeHtml(verification)}</span></div><small>${escapeHtml(finding.findingId)} · v${finding.version}</small></div><p>${escapeHtml((finding.limitations || []).join(' ') || 'Evidence state recorded.')}</p>${quote}${task}<select data-finding="${escapeHtml(finding.findingId)}"><option value="">Choose disposition…</option><option value="accepted" ${disposition === 'accepted' ? 'selected' : ''}>Accepted</option><option value="rejected" ${disposition === 'rejected' ? 'selected' : ''}>Rejected</option><option value="modified" ${disposition === 'modified' ? 'selected' : ''}>Modified</option><option value="escalated" ${disposition === 'escalated' ? 'selected' : ''}>Escalated</option></select><input data-note="${escapeHtml(finding.findingId)}" placeholder="Evidence note" value="${escapeHtml(finding.humanDisposition?.evidenceNote || '')}" /></article>`;
   }).join('');
   document.querySelectorAll('select[data-finding]').forEach((select) => select.addEventListener('change', () => recordDisposition(select.dataset.finding, select.value)));
 }
@@ -65,4 +72,14 @@ $('#close-run').addEventListener('click', async () => {
   const rationale = $('#rationale').value;
   const response = await fetch(`/api/runs/${activeRunId}/close`, { method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({ rationale }) });
   const body = await response.json(); setText('#close-status', response.ok ? 'Decision packet closed.' : body.error); renderRun(body);
+});
+
+$('#amend-run').addEventListener('click', async () => {
+  if (!activeRunId) return;
+  const findingId = document.querySelector('[data-finding]')?.dataset.finding;
+  if (!findingId) return;
+  const response = await fetch(`/api/runs/${activeRunId}/findings/${findingId}/amend`, { method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({ limitations:['Amended evidence requires a fresh human review.'] }) });
+  const body = await response.json();
+  setText('#amend-status', response.ok ? 'Finding amended; prior decision superseded and run reopened.' : body.error || 'Could not amend finding.');
+  if (response.ok) renderRun(body);
 });

@@ -15,7 +15,7 @@ This is under Devpost's 60-character project-name limit.
 
 ### Elevator pitch
 
-**An autonomous Gemini agent that verifies AI-assisted decisions, routes uncertainty to a human owner, and preserves the complete evidence and action trail.**
+**A Gemini-powered decision-assurance layer that binds AI claims to evidence, routes uncertainty to a human owner, and preserves replayable decision lineage.**
 
 This is under Devpost's 200-character elevator-pitch limit.
 
@@ -39,33 +39,39 @@ inspired us to build the missing accountability layer.
 
 ## What it does
 
-VerdictFlow is an asynchronous evidence harness for AI-assisted decisions. It:
+VerdictFlow is an asynchronous decision-assurance layer for AI-assisted
+decisions. It compiles model output into a controlled decision lineage:
 
 - Validates AI findings against declared source material.
 - Separates verified evidence from inference and missing information.
 - Routes uncertainty to a named human owner.
 - Preserves decision history, including superseded outcomes.
 
+The core mechanism is **evidence relay**: model output becomes actionable only
+after it is bound to declared source material, checked by deterministic gates,
+and assigned a human disposition. If evidence changes, the prior decision is
+superseded and the workflow reopens instead of silently overwriting history.
+
 For the demo, it processes a public research-paper excerpt. It is not an AI
 peer reviewer and does not make publication or accept/reject decisions.
 
 ## How we built it
 
-The local MVP implements the workflow with a deterministic fixture provider.
-The hackathon deployment target uses Gemini 3.5 or newer through Vertex AI and
-Google ADK:
+The MVP uses four bounded Gemini agents through Vertex AI and the official
+Google Gen AI SDK:
 
 1. Create a run with a public source, excerpt, scope, and human owner.
 2. Extract bounded questions about reporting, methods, citations, or declarations.
-3. Run specialist checks asynchronously through Pub/Sub.
+3. Run evidence and scope/safety checks in parallel through the local async workflow.
 4. Validate exact quotes, source boundaries, schemas, and safety constraints.
-5. Create human dispositions: accepted, rejected, modified, or escalated.
-6. Generate a decision packet and reopen the workflow when evidence changes.
+5. Synthesize only validated findings and create explicit human verification tasks when evidence is insufficient.
+6. Create human dispositions: accepted, rejected, modified, or escalated.
+7. Generate a decision packet and reopen the workflow when evidence changes.
 
-The target deployment uses Cloud Run for the API and workers, Pub/Sub for
-asynchronous jobs, Firestore for state and versions, Cloud Storage for
-artifacts, and Cloud Logging/OpenTelemetry for execution traces. These Google
-Cloud claims remain pending until live evidence is recorded.
+The verified deployment uses Cloud Run for the API and Vertex AI through the
+Google Gen AI SDK. Pub/Sub workers, Firestore state, Cloud Storage artifacts,
+and Cloud Logging/OpenTelemetry correlation remain planned and must not be
+claimed as implemented services yet.
 
 ## Challenges we ran into
 
@@ -92,10 +98,12 @@ replayable failure records.
 
 ## What's next for VerdictFlow — Evidence Relay
 
-Next, we will add adapters for other AI-assisted workflows, policy-versioned
-authorization, richer replay benchmarks, and stronger multi-user audit
-controls. The research-paper workflow remains the focused demonstration of the
-broader evidence-relay pattern.
+Our first production wedge is research-integrity and regulated-review teams
+that already use AI but must defend how evidence-heavy decisions were made.
+Next, we will add adapters for AI safety evaluation, compliance review,
+incident response, policy-versioned authorization, richer replay benchmarks,
+and stronger multi-user audit controls. The research-paper workflow remains
+the focused demonstration of the broader decision-assurance pattern.
 ```
 
 ## Built with tags
@@ -104,25 +112,34 @@ Select only technologies actually present in the final implementation:
 
 - Gemini
 - Vertex AI
-- Google ADK
+- Google Gen AI SDK (`@google/genai`)
 - Cloud Run
-- Pub/Sub
-- Firestore
-- Cloud Storage
-- OpenTelemetry
-- Python or TypeScript, depending on implementation
+- JavaScript / Node.js
 - Agent orchestration
 - Human-in-the-loop
 - Provenance
 - Audit logging
 - Asynchronous workflows
 
+## Evaluation evidence
+
+The repository includes a bounded acceptance evaluation in
+`docs/EVALUATION.md`. It reports unsupported-claim rejection, exact-quote
+validation, injection quarantine, idempotency, closure-gate, and
+reopen/supersede correctness. It also includes `docs/MODEL_EVALUATION.md` and
+`npm run evaluate:model`, which separately score provider output grounding,
+safe abstention, schema validity, and instruction resistance. Fixture results
+are labeled separately from live Vertex/Gemini results. The current live
+Gemini smoke benchmark passes 3/3 expected-status, 3/3 grounding, 3/3 schema,
+and 1/1 injection cases; this is not broad production accuracy without a
+larger labeled corpus.
+
 ## Try it out links
 
 | Devpost field | Value |
 |---|---|
-| Hosted project URL | `PENDING — Cloud Run URL after deployment` |
-| Code repository | `PENDING — public GitHub URL` |
+| Hosted project URL | `PENDING — GitHub Pages URL for this repository's `/site/` demo` |
+| Code repository | `https://github.com/RBX-Labs/verdict-flow` (private; share with the two Devpost reviewer accounts) |
 | Demo video | `PENDING — public YouTube or Vimeo URL` |
 | Architecture diagram | `verdictflow/docs/architecture-diagram.png` |
 
@@ -141,10 +158,39 @@ If the repository is private, grant access to:
 | Organization | Leave blank unless submitting on behalf of an eligible organization |
 | Project start date | Enter the actual first implementation date; do not backdate design-only work |
 | Reproducible README | Yes only after the stranger-run setup has been tested |
-| Google SDK | Agent Development Kit (ADK); Google GenAI SDK only if actually used |
-| Google Cloud services | Cloud Run, Pub/Sub, Firestore, and Cloud Storage if implemented |
-| Google AI models | Gemini 3.5 or newer; list Gemma only if actually integrated and evidenced |
+| Google SDK | Google Gen AI SDK (`@google/genai`) |
+| Google Cloud services | Cloud Run; add Pub/Sub, Firestore, or Cloud Storage only after adapters are implemented and evidenced |
+| Google AI models | Gemini 3.5 Flash-Lite; add Gemma 3 only after the deployed advisory endpoint passes a live smoke test and is evidenced in the trace and benchmark |
 | Startup prize | Leave unselected unless an incorporated organization and corporate email qualify |
+
+### Reproducible README field
+
+Select **Yes**. The README contains `npm ci`, `npm test`, local startup,
+fixture API smoke-test, expected results, Vertex mode, and hosted-service
+testing instructions. The local stranger-run path was verified separately from
+the live Gemini path.
+
+### Testing instructions field
+
+Use this for judges:
+
+```text
+The GitHub Pages demo in the repository's `site/` directory is a credential-
+free deterministic fixture. Click **Run the 30-second demo**, then follow the
+visible workflow: inspect the four-agent trace, open and complete the human
+task, close the packet, and amend it to show reopening and supersession. The
+page deliberately labels fixture mode; it does not claim that anonymous
+browser traffic invokes Gemini. The verified Gemini/Vertex AI run is recorded
+in the repository implementation ledger.
+
+Authorized testers can also inspect the private Cloud Run deployment with:
+
+TOKEN="$(gcloud auth print-identity-token)"
+curl -H "Authorization: Bearer $TOKEN" https://verdictflow-628812601211.us-central1.run.app/health
+
+For a fully local reproducible test, clone the repository and follow the
+README's `npm ci`, `npm test`, and `npm start` instructions.
+```
 
 ## README requirements
 
@@ -157,14 +203,13 @@ The public repository README must include:
 5. Local setup steps.
 6. Google Cloud project and API enablement steps.
 7. Firestore and Cloud Storage setup.
-8. Pub/Sub topic, subscription, retry, and dead-letter setup.
-9. ADK agent start commands.
-10. Cloud Run deployment commands.
-11. Seed-fixture and demo-run commands.
-12. Test commands and expected results.
-13. Troubleshooting and cleanup commands.
-14. Prior-work and third-party disclosure.
-15. Clear statement of what is implemented versus planned.
+8. Current local workflow and Vertex provider start commands.
+9. Cloud Run deployment commands.
+10. Seed-fixture and demo-run commands.
+11. Test commands and expected results.
+12. Troubleshooting and cleanup commands.
+13. Prior-work and third-party disclosure.
+14. Clear statement of what is implemented versus planned.
 
 ## Required demo video
 
@@ -177,8 +222,8 @@ have English subtitles.
 |---|---|---|
 | 0:00–0:25 | Explain the accountability problem | Product UI and one-sentence value proposition |
 | 0:25–0:45 | Create a public evidence run | Source URL, scope, owner, run ID |
-| 0:45–1:15 | Show asynchronous execution | Cloud Run URL/revision and Pub/Sub event |
-| 1:15–1:55 | Show parallel agent checks | ADK trace and Firestore state changes |
+| 0:45–1:15 | Show asynchronous execution | Cloud Run URL/revision and workflow event trace |
+| 1:15–1:55 | Show evidence verification | Vertex request, exact quote, and explicit verification status |
 | 1:55–2:20 | Show unsupported claim handling | Exact-quote rejection and `not_established` result |
 | 2:20–2:45 | Show hidden instruction protection | Block/quarantine event; no policy override |
 | 2:45–3:15 | Record human dispositions | Accepted, rejected, modified, escalated findings |
@@ -195,8 +240,10 @@ Upload the generated PNG at:
 
 `/Users/bangabot/Documents/RBX-Labs/verdictflow/docs/architecture-diagram.png`
 
-The diagram must show Gemini/Vertex AI, ADK, Cloud Run, Pub/Sub, Firestore,
-Cloud Storage, frontend/API, deterministic validation, and audit telemetry.
+The diagram shows the verified public demo, private Cloud Run + Vertex AI
+runtime, four bounded agents, deterministic gates, human disposition, and
+planned Pub/Sub/Firestore/Cloud Storage/ADK/telemetry adapters. Planned items
+are visually marked and must not be selected as implemented integrations.
 
 ## Optional bonus contributions
 
@@ -228,7 +275,7 @@ call solely for bonus points.
 Before pressing Submit, confirm:
 
 - [ ] Gemini 3.5+ actually ran.
-- [ ] ADK actually orchestrated the workflow.
+- [ ] Any optional ADK integration is actually implemented; otherwise do not select ADK.
 - [ ] At least one Google Cloud service actually ran.
 - [ ] Category is Taskmaster.
 - [ ] Project start date is accurate.
