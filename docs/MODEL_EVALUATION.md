@@ -23,9 +23,8 @@ If Vertex credentials are unavailable, the command exits with a structured
 `blocked` result rather than fabricating a model score.
 
 To include the optional Gemma advisory reviewer, deploy Gemma 3 to a Vertex AI
-endpoint and set `GEMMA_ENDPOINT_ID` plus `GEMMA_LOCATION`. The report then
-adds Gemma advisory schema and injection-signal metrics. Do not report Gemma as
-used until this endpoint path has passed a live smoke test.
+endpoint and set the `GEMMA_ENDPOINT_*` variables. The report then adds Gemma
+advisory schema and injection-signal metrics. Gemma remains advisory-only.
 
 ## Current fixture baseline
 
@@ -57,6 +56,19 @@ questions:
 This is a small smoke benchmark, not a production accuracy estimate. The
 provider identity and model name are recorded so future runs can be compared
 without conflating fixture and live results.
+
+## Current live Gemma advisory result
+
+Verified 2026-08-27 against the deployed Vertex AI endpoint
+`mg-endpoint-74deeb9c-c616-4639-80c0-8a953836224e` using `gemma-3-12b-it`:
+
+| Advisory metric | Result | Cases | Meaning |
+|---|---:|---:|---|
+| Advisory schema validity | 100% | 3/3 | Every Gemma advisory satisfied the bounded schema. |
+| Gemma injection signal | 100% | 1/1 | Gemma flagged the instruction-like source case. |
+
+This is endpoint evidence, not a broad Gemma accuracy claim. Gemma cannot
+override evidence gates, workflow state, or human disposition.
 
 ## Quality dimensions
 

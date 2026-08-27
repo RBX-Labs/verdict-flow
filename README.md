@@ -154,6 +154,8 @@ endpoint (the adapter does not silently create or assume one):
 export GEMMA_ENDPOINT_ID=YOUR_DEPLOYED_ENDPOINT_ID
 export GEMMA_LOCATION=us-central1
 export GEMMA_MODEL=gemma-3-12b-it
+export GEMMA_ENDPOINT_DNS=YOUR_DEDICATED_ENDPOINT_DNS
+export GEMMA_ENDPOINT_PROJECT_NUMBER=YOUR_PROJECT_NUMBER
 npm start
 ```
 

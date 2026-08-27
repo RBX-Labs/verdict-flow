@@ -160,7 +160,7 @@ If the repository is private, grant access to:
 | Reproducible README | Yes only after the stranger-run setup has been tested |
 | Google SDK | Google Gen AI SDK (`@google/genai`) |
 | Google Cloud services | Cloud Run; add Pub/Sub, Firestore, or Cloud Storage only after adapters are implemented and evidenced |
-| Google AI models | Gemini 3.5 Flash-Lite; add Gemma 3 only after the deployed advisory endpoint passes a live smoke test and is evidenced in the trace and benchmark |
+| Google AI models | Gemini 3.5 Flash-Lite plus Gemma 3 (`gemma-3-12b-it`) as a bounded advisory reviewer; live benchmark evidence is in `docs/MODEL_EVALUATION.md` |
 | Startup prize | Leave unselected unless an incorporated organization and corporate email qualify |
 
 ### Reproducible README field

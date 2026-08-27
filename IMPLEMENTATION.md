@@ -54,7 +54,8 @@ to be live.
 
 ### Gemma advisory boundary
 
-Gemma is not used as a second decision-maker. When `GEMMA_ENDPOINT_ID` is set,
+Gemma is not used as a second decision-maker. When `GEMMA_ENDPOINT_ID` and
+`GEMMA_ENDPOINT_DNS` are set,
 the adapter calls a deployed Vertex AI endpoint and returns only a bounded
 advisory: risk, instruction-like text, unsupported-claim signal, abstention
 signal, and flags. The advisory is recorded in the agent trace and supplied to
@@ -289,7 +290,7 @@ Record implementation proof here as it becomes real:
 | Review Console end-to-end flow | Visual/API audit: run → quarantine → four-agent trace → human dispositions → closed packet → UI amend/reopen | VERIFIED |
 | Acceptance evaluation | `docs/EVALUATION.md`; six control metrics with test/audit evidence | VERIFIED |
 | Model-quality benchmark harness | `npm run evaluate:model`; fixture and live Vertex/Gemini benchmark both verified at 100% on the current 3-case labeled set | IMPLEMENTED / SMALL BENCHMARK |
-| Gemma advisory adapter | `src/agents/gemma-reviewer.mjs`; endpoint-backed implementation with schema test; deployed endpoint and live smoke result still required | IMPLEMENTED / ENDPOINT PENDING |
+| Gemma advisory adapter | `src/agents/gemma-reviewer.mjs`; deployed Vertex AI Gemma 3 endpoint `mg-endpoint-74deeb9c-c616-4639-80c0-8a953836224e`; live 3-case benchmark: 3/3 advisory schema-valid and 1/1 injection signal | VERIFIED / SMALL BENCHMARK |
 | Pub/Sub async execution | message/event log | PENDING |
 | Firestore persistence | document IDs/screenshots | PENDING |
 | Cloud Storage artifacts | object IDs | PENDING |
