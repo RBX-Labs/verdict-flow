@@ -5,6 +5,51 @@ const findings = [
 ];
 let dispositions = { method:'', access:'' };
 
+function enhanceDispositionPicker() {
+  const select = $('task-disposition');
+  if (!select || $('task-disposition-trigger')) return;
+  const wrap = document.createElement('div');
+  wrap.className = 'select-wrap';
+  const trigger = document.createElement('button');
+  trigger.id = 'task-disposition-trigger';
+  trigger.className = 'select-trigger';
+  trigger.type = 'button';
+  trigger.setAttribute('aria-haspopup', 'listbox');
+  trigger.setAttribute('aria-expanded', 'false');
+  trigger.textContent = 'Choose one…';
+  const options = document.createElement('div');
+  options.id = 'task-disposition-options';
+  options.className = 'select-options hidden';
+  options.setAttribute('role', 'listbox');
+  options.setAttribute('aria-label', 'Human disposition');
+  [...select.options].slice(1).forEach((item) => {
+    const option = document.createElement('button');
+    option.type = 'button';
+    option.className = 'select-option';
+    option.setAttribute('role', 'option');
+    option.dataset.value = item.value || item.textContent;
+    option.textContent = item.textContent;
+    options.append(option);
+  });
+  select.parentElement.insertBefore(wrap, select);
+  wrap.append(trigger, options);
+  select.classList.add('native-select');
+  trigger.addEventListener('click', () => {
+    options.classList.toggle('hidden');
+    trigger.setAttribute('aria-expanded', String(!options.classList.contains('hidden')));
+  });
+  options.addEventListener('click', (event) => {
+    const option = event.target.closest('[data-value]');
+    if (!option) return;
+    select.value = option.dataset.value;
+    trigger.textContent = option.dataset.value;
+    options.classList.add('hidden');
+    trigger.setAttribute('aria-expanded', 'false');
+    dispositions.access = select.value.toLowerCase();
+    maybeEnableClose();
+  });
+}
+
 function renderFindings() {
   $('findings').innerHTML = findings.map((f) => `<article class="finding"><div class="finding-top"><span class="${f.status === 'EVIDENCE_VERIFIED' ? 'verified' : 'unproven'}">${f.status}</span><span>${f.id} · v1</span></div><h3>${f.title}</h3><blockquote>“${f.quote}”</blockquote><footer><span>${f.source}</span><span class="check">${f.status === 'EVIDENCE_VERIFIED' ? 'Quote matched' : 'Human task'}</span></footer>${f.status === 'EVIDENCE_VERIFIED' ? '<button data-accept="method" class="mini">Accept verified evidence</button>' : ''}</article>`).join('');
   document.querySelector('[data-accept="method"]')?.addEventListener('click', (event) => { dispositions.method = 'accepted'; event.target.textContent = 'Accepted ✓'; event.target.disabled = true; maybeEnableClose(); });
@@ -20,6 +65,7 @@ function showRun() {
     ['04 Synthesis', 'Decision packet prepared']
   ].map(([title, detail]) => `<div class="event"><b>${title}</b><small>${detail}</small></div>`).join('');
   renderFindings();
+  enhanceDispositionPicker();
 }
 
 $('run').addEventListener('click', () => { $('run').textContent = 'Workflow complete ✓'; $('run').disabled = true; showRun(); });
