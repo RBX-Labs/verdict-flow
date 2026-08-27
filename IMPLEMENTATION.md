@@ -286,7 +286,7 @@ Record implementation proof here as it becomes real:
 | Google Gen AI SDK invokes Gemini | Cloud Run run `run_8575db8a-b051-4e3a-a534-1cb8f9b40798`; provider `google_vertex_ai` | VERIFIED |
 | Four-agent Gemini workflow | Cloud Run run `run_8575db8a-b051-4e3a-a534-1cb8f9b40798`; intake, evidence, scope/safety, and synthesis completed | VERIFIED |
 | Cloud Run deployed privately | `https://verdictflow-628812601211.us-central1.run.app`, revision `verdictflow-00005-5b4` | VERIFIED |
-| Same-repository judge demo | `site/` plus `.github/workflows/pages.yml`; GitHub Pages publication pending | IMPLEMENTED / HOSTING PENDING |
+| Same-repository judge demo | `site/` plus `.github/workflows/pages.yml`; public fixture walkthrough and silent demo verified at `https://rbx-labs.github.io/verdict-flow/` | VERIFIED |
 | Review Console end-to-end flow | Visual/API audit: run → quarantine → four-agent trace → human dispositions → closed packet → UI amend/reopen | VERIFIED |
 | Acceptance evaluation | `docs/EVALUATION.md`; six control metrics with test/audit evidence | VERIFIED |
 | Model-quality benchmark harness | `npm run evaluate:model`; fixture and live Vertex/Gemini benchmark both verified at 100% on the current 3-case labeled set | IMPLEMENTED / SMALL BENCHMARK |

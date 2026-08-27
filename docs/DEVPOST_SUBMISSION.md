@@ -138,9 +138,9 @@ larger labeled corpus.
 
 | Devpost field | Value |
 |---|---|
-| Hosted project URL | `PENDING — GitHub Pages URL for this repository's `/site/` demo` |
+| Hosted project URL | `https://rbx-labs.github.io/verdict-flow/` |
 | Code repository | `https://github.com/RBX-Labs/verdict-flow` (private; share with the two Devpost reviewer accounts) |
-| Demo video | `PENDING — public YouTube or Vimeo URL` |
+| Demo video | `https://rbx-labs.github.io/verdict-flow/verdictflow-demo-silent.mp4` (public silent fallback; YouTube/Vimeo preferred if required by the form) |
 | Architecture diagram | `verdictflow/docs/architecture-diagram.png` |
 
 If the repository is private, grant access to:
