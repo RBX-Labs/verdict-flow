@@ -52,9 +52,9 @@ flowchart TD
 
 The dashed services are not represented as implemented in the current MVP.
 The public Sites page is a fixture-mode judge surface; the Cloud Run endpoint
-is the authenticated live Gemini/Vertex AI evidence surface. Gemma is a
-verified deployed advisory path in the current environment, but it is not a
-decision-maker; benchmark evidence is recorded in
+is the authenticated live Gemini/Vertex AI evidence surface. Gemma was a
+verified advisory path during the benchmark and is now undeployed to avoid
+idle GPU charges; it is not a decision-maker. Evidence is recorded in
 `docs/MODEL_EVALUATION.md`.
 
 ## Google services

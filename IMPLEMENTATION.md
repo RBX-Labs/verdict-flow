@@ -290,7 +290,7 @@ Record implementation proof here as it becomes real:
 | Review Console end-to-end flow | Visual/API audit: run → quarantine → four-agent trace → human dispositions → closed packet → UI amend/reopen | VERIFIED |
 | Acceptance evaluation | `docs/EVALUATION.md`; six control metrics with test/audit evidence | VERIFIED |
 | Model-quality benchmark harness | `npm run evaluate:model`; fixture and live Vertex/Gemini benchmark both verified at 100% on the current 3-case labeled set | IMPLEMENTED / SMALL BENCHMARK |
-| Gemma advisory adapter | `src/agents/gemma-reviewer.mjs`; deployed Vertex AI Gemma 3 endpoint `mg-endpoint-74deeb9c-c616-4639-80c0-8a953836224e`; live 3-case benchmark: 3/3 advisory schema-valid and 1/1 injection signal | VERIFIED / SMALL BENCHMARK |
+| Gemma advisory adapter | `src/agents/gemma-reviewer.mjs`; endpoint `mg-endpoint-74deeb9c-c616-4639-80c0-8a953836224e` was live for the 2026-08-27 benchmark and is now undeployed to stop GPU charges; 3/3 advisory schema-valid and 1/1 injection signal | VERIFIED / BENCHMARK COMPLETE / ENDPOINT STOPPED |
 | Pub/Sub async execution | message/event log | PENDING |
 | Firestore persistence | document IDs/screenshots | PENDING |
 | Cloud Storage artifacts | object IDs | PENDING |
