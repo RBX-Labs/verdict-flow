@@ -214,7 +214,7 @@ the complete run → human task → decision packet → reopen lifecycle:
 
 https://rbx-labs.github.io/verdict-flow/site/
 
-Silent demo video:
+Silent demo video for review (Devpost requires an accepted video host):
 
 https://rbx-labs.github.io/verdict-flow/site/verdictflow-demo-silent.mp4
 

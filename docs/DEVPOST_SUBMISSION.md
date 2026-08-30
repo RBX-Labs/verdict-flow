@@ -140,7 +140,7 @@ larger labeled corpus.
 |---|---|
 | Hosted project URL | `https://rbx-labs.github.io/verdict-flow/` |
 | Code repository | `https://github.com/RBX-Labs/verdict-flow` (private; share with the two Devpost reviewer accounts) |
-| Demo video | `https://rbx-labs.github.io/verdict-flow/site/verdictflow-demo-silent.mp4` (public silent fallback; YouTube/Vimeo preferred if required by the form) |
+| Demo video | `PENDING — upload the current silent demo to YouTube, Facebook Video, Vimeo, or Youku; do not add custom voiceover yet` |
 | Architecture diagram | `verdictflow/docs/architecture-diagram.png` |
 
 If the repository is private, grant access to:
@@ -212,6 +212,16 @@ The public repository README must include:
 14. Clear statement of what is implemented versus planned.
 
 ## Required demo video
+
+The intended video is the current silent demo:
+
+https://rbx-labs.github.io/verdict-flow/site/verdictflow-demo-silent.mp4
+
+Use that exact cut as the source for the final hosted video. The GitHub Pages
+MP4 is useful for review but is not a valid Devpost video-field URL. Before
+submission, upload the silent MP4 to YouTube, Facebook Video, Vimeo, or Youku
+and paste that hosted URL into Devpost. Custom voiceover is intentionally
+deferred until explicitly requested.
 
 Maximum: four minutes. It must be public on YouTube or Vimeo and in English or
 have English subtitles.
