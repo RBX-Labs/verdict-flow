@@ -1,0 +1,19 @@
+/* VerdictFlow visual language: source grids, evidence rails, and state rings. */
+body { background: radial-gradient(circle at 8% 12%, #dff6e9 0, transparent 24rem), radial-gradient(circle at 92% 68%, #e7edff 0, transparent 28rem), var(--paper); }
+.hero:before { content: ""; position: absolute; inset: 0; opacity: .32; background-image: linear-gradient(#31415c 1px, transparent 1px), linear-gradient(90deg, #31415c 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(90deg, black 0 58%, transparent 94%); pointer-events: none; }
+.hero:after { opacity: .7; box-shadow: 0 0 0 50px #151f34, 0 0 0 51px #53617a, 0 0 0 125px #151f34, 0 0 0 126px #53617a, 0 0 0 210px #151f34, 0 0 0 211px #53617a; }
+.hero-console:before { content: "SOURCE BOUNDARY / 04"; position: absolute; right: 22px; top: -22px; color: #72dfad; font: 800 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .16em; transform: rotate(-3deg); }
+.problem { background: linear-gradient(135deg, transparent 0 72%, #e7f4ec 72% 72.2%, transparent 72.2%); }
+.problem-grid article { position: relative; overflow: hidden; box-shadow: 0 16px 40px #0e1a2b0a; }
+.problem-grid article:after { content: ""; position: absolute; right: -24px; bottom: -30px; width: 100px; height: 100px; border: 1px solid #d3e4da; border-radius: 50%; box-shadow: 0 0 0 16px #f7faf8, 0 0 0 17px #d3e4da; opacity: .8; }
+.loop { background-color: #fff; background-image: radial-gradient(#c7d8cf 1px, transparent 1px); background-size: 18px 18px; }
+.flow-step { box-shadow: 0 12px 30px #0e1a2b0a; }
+.demo-section { background: linear-gradient(180deg, #f4f7f5 0, #eef4f0 100%); }
+.run-panel { position: relative; overflow: hidden; }
+.run-panel:before { content: "EVIDENCE RELAY"; position: absolute; right: 28px; top: 24px; color: #d7e4dc; font: 800 34px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: -.08em; transform: rotate(-8deg); pointer-events: none; }
+.evaluation { background: radial-gradient(circle at 88% 20%, #dff5e8 0, transparent 22rem), #fff; }
+.metric { position: relative; overflow: hidden; }
+.metric:after { content: "↗"; position: absolute; right: 16px; top: 13px; color: #c3ddd0; font-size: 20px; }
+.architecture { background-image: linear-gradient(135deg, #101b2d 0 45%, #13263b 45% 45.2%, #101b2d 45.2%), linear-gradient(#283952 1px, transparent 1px), linear-gradient(90deg, #283952 1px, transparent 1px); background-size: auto, 38px 38px, 38px 38px; }
+.integration-stack { position: relative; }
+.integration-stack:before { content: "DECISION RELAY"; position: absolute; right: 16px; top: -9px; background: #101b2d; color: #72dfad; padding: 0 7px; font: 800 8px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .15em; }
