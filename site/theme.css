@@ -1,5 +1,21 @@
 /* VerdictFlow visual language: source grids, evidence rails, and state rings. */
 body { background: radial-gradient(circle at 8% 12%, #dff6e9 0, transparent 24rem), radial-gradient(circle at 92% 68%, #e7edff 0, transparent 28rem), var(--paper); }
+.hero-copy { animation: hero-copy-in .75s cubic-bezier(.2,.8,.2,1) both; }
+.hero-console { animation: console-in .9s .12s cubic-bezier(.2,.8,.2,1) both; }
+.hero:before { background-position: 0 0; animation: grid-drift 18s linear infinite; }
+.hero-console:after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(90deg, transparent, #72dfad, transparent); opacity: .7; animation: console-scan 5s ease-in-out infinite; pointer-events: none; }
+.elevator-line { max-width: 570px; margin: 0 0 25px; color: #72dfad; font: 650 13px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: -.02em; border-left: 2px solid #72dfad; padding-left: 13px; animation: elevator-in .75s .28s both; }
+.console-row { opacity: 0; animation: row-in .5s ease-out forwards; }
+.console-row:nth-child(4) { animation-delay: .55s; }
+.console-row:nth-child(5) { animation-delay: .72s; }
+.console-row:nth-child(6) { animation-delay: .89s; }
+@keyframes hero-copy-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes elevator-in { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+@keyframes console-in { from { opacity: 0; transform: translateY(20px) rotate(1deg); } to { opacity: 1; transform: none; } }
+@keyframes row-in { from { opacity: 0; transform: translateX(8px); } to { opacity: 1; transform: none; } }
+@keyframes grid-drift { to { background-position: 42px 42px; } }
+@keyframes console-scan { 0%, 100% { transform: translateY(0); opacity: 0; } 12%, 78% { opacity: .7; } 90% { transform: translateY(500px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
 .hero:before { content: ""; position: absolute; inset: 0; opacity: .32; background-image: linear-gradient(#31415c 1px, transparent 1px), linear-gradient(90deg, #31415c 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(90deg, black 0 58%, transparent 94%); pointer-events: none; }
 .hero:after { opacity: .7; box-shadow: 0 0 0 50px #151f34, 0 0 0 51px #53617a, 0 0 0 125px #151f34, 0 0 0 126px #53617a, 0 0 0 210px #151f34, 0 0 0 211px #53617a; }
 .hero-console:before { content: "SOURCE BOUNDARY / 04"; position: absolute; right: 22px; top: -22px; color: #72dfad; font: 800 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .16em; transform: rotate(-3deg); }

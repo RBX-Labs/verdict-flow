@@ -1,4 +1,8 @@
 const $ = (id) => document.getElementById(id);
+const elevator = document.createElement('p');
+elevator.className = 'elevator-line';
+elevator.textContent = 'A Gemini-powered decision-assurance layer that binds AI claims to evidence, routes uncertainty to a human owner, and preserves replayable decision lineage.';
+document.querySelector('.hero-actions')?.before(elevator);
 const findings = [
   { id:'method', title:'Eligibility requirement is explicit', status:'EVIDENCE_VERIFIED', quote:'Submissions must include a reproducible testing section.', source:'Hackathon rules · §4' },
   { id:'access', title:'Public access is not established', status:'NOT_ESTABLISHED', quote:'The supplied excerpt does not establish anonymous judge access.', source:'Access check · 403 observed' }
